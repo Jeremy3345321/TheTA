@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TheTA — Teacher Workflow Assistant</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ── Header ─────────────────────────────────────────────── -->
+  <header class="header">
+    <div class="header__logo">
+      <span class="header__logo-mark">Θ</span>
+      <span class="header__logo-text">TheTA</span>
+    </div>
+    <div class="header__meta">
+      <span class="status-dot" id="statusDot"></span>
+      <span class="status-label" id="statusLabel">Connecting...</span>
+    </div>
+  </header>
+
+  <!-- ── Main layout ────────────────────────────────────────── -->
+  <main class="workspace">
+
+    <!-- Left panel: Chat -->
+    <section class="panel panel--chat">
+      <div class="panel__header">
+        <h2 class="panel__title">Instructions</h2>
+        <p class="panel__subtitle">Type a classroom instruction in natural language</p>
+      </div>
+
+      <!-- Message history -->
+      <div class="chat-history" id="chatHistory">
+        <div class="chat-empty" id="chatEmpty">
+          <span class="chat-empty__icon">✦</span>
+          <p>No instructions yet.<br/>Send one below to get started.</p>
+        </div>
+      </div>
+
+      <!-- Input area -->
+      <div class="chat-input-area">
+        <textarea
+          id="utteranceInput"
+          class="chat-input"
+          placeholder="e.g. Post a quiz for Grade 10 Rizal in Math due this Friday..."
+          rows="3"
+        ></textarea>
+        <button class="send-btn" id="sendBtn">
+          <span class="send-btn__label">Send</span>
+          <span class="send-btn__icon">→</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Right panel: JSON output -->
+    <section class="panel panel--output">
+      <div class="panel__header">
+        <h2 class="panel__title">System Output</h2>
+        <div class="output-controls">
+          <span class="panel__subtitle" id="outputMeta">Awaiting instruction</span>
+          <button class="copy-btn" id="copyBtn" title="Copy JSON">Copy</button>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tabs">
+        <button class="tab tab--active" data-tab="full">Full Response</button>
+        <button class="tab" data-tab="nlu">NLU</button>
+        <button class="tab" data-tab="result">Result</button>
+      </div>
+
+      <!-- JSON display -->
+      <div class="output-window" id="outputWindow">
+        <div class="output-placeholder" id="outputPlaceholder">
+          <span class="output-placeholder__icon">{ }</span>
+          <p>JSON output will appear here</p>
+        </div>
+        <pre class="output-json" id="outputJson"></pre>
+      </div>
+
+      <!-- Intent badge -->
+      <div class="intent-strip" id="intentStrip" style="display:none;">
+        <div class="intent-badge">
+          <span class="intent-badge__label">Intent</span>
+          <span class="intent-badge__value" id="intentValue">—</span>
+        </div>
+        <div class="intent-badge">
+          <span class="intent-badge__label">Confidence</span>
+          <span class="intent-badge__value" id="confidenceValue">—</span>
+        </div>
+        <div class="intent-badge">
+          <span class="intent-badge__label">Status</span>
+          <span class="intent-badge__value" id="statusValue">—</span>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
