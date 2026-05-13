@@ -19,7 +19,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-from nlu.classifier import classify_intent
+from nlu.classifier_lr import classify_intent_lr
 from nlu.extractor import extract_entities, preprocess
 from nlu.validator import validate, compute_confidence
 
@@ -78,10 +78,7 @@ def nlu_pipeline(utterance: str) -> dict:
     preprocessed = preprocess(utterance)
 
     # Step 2: Intent classification
-    # ── SWAP THIS LINE when SetFit is ready ──────────────────────
-    intent = classify_intent(preprocessed)
-    # intent = classify_intent_setfit(preprocessed)
-    # ─────────────────────────────────────────────────────────────
+    intent = classify_intent_lr(preprocessed)
 
     # Step 3: Entity extraction (passes original text for NER accuracy)
     entities = extract_entities(
