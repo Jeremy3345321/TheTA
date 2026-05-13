@@ -73,26 +73,79 @@ def preprocess(text: str) -> str:
     return re.sub(r"\s+", " ", text.lower().strip())
 
 
-# ── Individual slot extractors ────────────────────────────────────────────────
+# Known section name keywords to exclude from bare-name matching
+# (prevents "in Math" or "in Science" from being grabbed as a section)
+_SUBJECT_WORDS = {
+    "math", "mathematics", "science", "english", "filipino",
+    "mapeh", "music", "arts", "health", "tle", "esp", "araling",
+    "panlipunan", "edukasyon", "technology", "livelihood",
+}
 
-def extract_section(text: str) -> str | None:
+def _load_sections(csv_path: str | None = None) -> list[str]:
     """
-    Matches Philippine school section naming patterns:
-        - "Grade 10 Rizal"
-        - "Grade 8-B"
-        - "Section Mabini"
-        - "10 Aguinaldo"
+    Loads unique section names from the student CSV.
+    Returns a deduplicated list like ["Grade 10 Rizal", "Grade 10 Mabini", "Grade 9 Aguinaldo"]
     """
+    path = csv_path or os.getenv("CSV_PATH", "./data/students.csv")
+    sections = set()
+
+    if not Path(path).exists():
+        return []
+
+    with open(path, newline="", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            if "section" in row:
+                sections.add(row["section"].strip())
+
+    return list(sections)
+
+_sections: list[str] = _load_sections()
+
+def extract_section(text: str, fuzzy_threshold: int = 60) -> str | None:
     patterns = [
         r"\bgrade\s?\d+[\w\-]*(?:\s+[a-z]+){0,2}",
         r"\bsection\s+[a-z]+",
-        r"\b\d{1,2}\s*[-–]\s*[a-z]+",       # "10 - Rizal" or "8-B"
+        r"\b\d{1,2}\s*[-–]\s*[a-z]+",
     ]
+
+    raw = None
+
     for pattern in patterns:
         match = re.search(pattern, text)
         if match:
-            return match.group(0).strip().title()
-    return None
+            raw = match.group(0).strip().title()
+            if raw.lower().startswith("section "):
+                raw = raw[8:]
+            break
+
+    # Fallback: bare name after "in" or "for"
+    if not raw:
+        bare = re.search(r"\b(?:in|for)\s+([a-z]+)\b", text)
+        if bare:
+            candidate = bare.group(1).lower()
+            if candidate not in _SUBJECT_WORDS:
+                raw = candidate.title()
+
+    if not raw:
+        return None
+
+    # Validate + normalize against the CSV section list
+    if not _sections:
+        return raw  # no CSV loaded, return raw regex result
+
+    result = process.extractOne(
+        raw,
+        _sections,
+        scorer=fuzz.token_sort_ratio,
+        score_cutoff=fuzzy_threshold,
+    )
+
+    if result:
+        matched_section, score, _ = result
+        return matched_section  # returns the exact string from the CSV
+
+    return None  # extracted something but it doesn't match any real section
 
 
 def extract_activity_type(text: str) -> str | None:

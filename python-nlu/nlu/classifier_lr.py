@@ -31,6 +31,12 @@ INTENT_EXAMPLES = {
         "add a worksheet for science class",
         "make an exam for grade 8 rizal",
         "send an assignment to the students due next monday",
+        "post a quiz for grade 10 Rizal in math due this friday",
+        "give an assignment to Grade 9 aguinaldo in science due next monday",
+        "Create a seatwork for section Mabini in Filipino",
+        "Upload a performance task for Grade 8 in MAPEH due January 20",
+        "Assign a project to Grade 10 due in 2 weeks"
+
     ],
     "retrieve_student_info": [
         "get the student profile",
@@ -73,8 +79,8 @@ INTENT_EXAMPLES = {
         "show all learners in grade 10",
         "display the class list",
         "get names of students",
-        "who are the students in section aguinaldo",
-        "get student information of section rizal",  
+        "who are the students in section",
+        "get student information of section",  
         "show all student info in section mabini",
     ],
     "out_of_scope": [

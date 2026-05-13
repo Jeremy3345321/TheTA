@@ -7,12 +7,6 @@ Ensures that:
     1. The predicted intent is a known label.
     2. The entity dict contains only fields permitted for that intent.
     3. Confidence is computed based on how many required slots were filled.
-
-Reference:
-    Albornoz-De Luise et al. (2024) — Leveraging Intent-Entity Relationships
-    to Enhance Semantic Accuracy in NLU Models.
-    Neural Computing and Applications, 36, 16331–16344.
-    https://doi.org/10.1007/s00521-024-09927-0
 """
 
 # ── Allowed entity fields per intent ─────────────────────────────────────────
